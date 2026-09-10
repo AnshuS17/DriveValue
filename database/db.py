@@ -84,7 +84,12 @@ class DatabaseManager:
                 
                 pipeline = [{"$group": {"_id": None, "avg_price": {"$avg": "$price"}}}]
                 avg_result = list(self.cars_collection.aggregate(pipeline))
-                avg_price = int(avg_result[0]["avg_price"]) if avg_result else 0
+                
+                avg_price = 0
+                if avg_result and isinstance(avg_result, list) and len(avg_result) > 0:
+                    raw_val = avg_result[0].get("avg_price")
+                    if raw_val is not None:
+                        avg_price = int(float(raw_val))
                 
                 fuel_pipeline = [
                     {"$group": {"_id": "$fuel_type", "count": {"$sum": 1}}},
@@ -92,7 +97,7 @@ class DatabaseManager:
                     {"$limit": 1}
                 ]
                 fuel_result = list(self.cars_collection.aggregate(fuel_pipeline))
-                top_fuel = fuel_result[0]["_id"] if fuel_result else "N/A"
+                top_fuel = fuel_result[0]["_id"] if (fuel_result and len(fuel_result) > 0 and fuel_result[0].get("_id")) else "Petrol"
                 
                 return {
                     "total_cars": total_cars,
