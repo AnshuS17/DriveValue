@@ -1,93 +1,137 @@
-# DriveValue: AI-Powered Second-Hand Car Price Prediction System & Camera Scanner
+# 🚗 DriveValue — AI Used Car Price Predictor & Camera Scanner
 
-> **"Know what your car is really worth."**
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-drivevalue--five.vercel.app-111111?style=for-the-badge&logo=vercel)](https://drivevalue-five.vercel.app/predict)
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-3.0-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com)
+[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.4-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)](https://scikit-learn.org)
+[![MongoDB](https://img.shields.io/badge/MongoDB-4.6-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com)
 
-A complete, production-ready, college-level Machine Learning + Artificial Intelligence web application designed to predict the accurate resale price of used cars based on specifications, condition, usage, market data, and instant camera photo scanner.
-
----
-
-## 📌 1. Project Overview
-
-DriveValue bridges the gap between used car buyers, sellers, and market reality. Estimating a car's second-hand value manually is prone to subjective bias. DriveValue applies supervised machine learning regression algorithms trained on 2,750+ real-world Indian used car records to provide data-backed market valuations instantly.
-
-### Key Features
-- **📷 Instant Camera Photo Valuation**: Snap a live picture of your vehicle using your device camera or upload a car photo. The AI Vision scanner detects vehicle attributes and estimates resale value instantly.
-- **Manual Vehicle Form Valuation**: Input vehicle brand, model, manufacturing year, kilometers driven, fuel type, transmission, condition, and ownership details for accurate price estimation.
-- **Approximate Market Price Range**: Displays estimated upper and lower market range boundaries ($\pm 5.5\%$).
-- **Model Reliability Metrics**: Transparently displays empirical model reliability score ($R^2 = 95.97\%$) without faking AI confidence.
-- **Rule-Based Explanation Engine**: Automatically generates natural language explanations detailing positive and negative value drivers (No external LLM or API keys required).
-- **Interactive Feature Importance Chart**: Visualizes key pricing drivers using Chart.js.
-- **Similar Car Finder**: Queries MongoDB for active market listings matching brand, fuel type, and price range.
-- **MongoDB Used Cars Catalog**: Browse, search, filter, and view detailed vehicle profiles.
-- **Admin Management Portal**: Easily view database statistics, insert new vehicle listings, or delete records.
+> **"Know what your car is really worth."**  
+> 🔗 **Live Web Application**: [https://drivevalue-five.vercel.app/predict](https://drivevalue-five.vercel.app/predict)
 
 ---
 
-## 🎓 2. College Project Objectives & Viva Defense Guide
+## 📌 Project Overview
 
-This project is tailored for academic presentation (B.Tech CSE / IT / Data Science).
+**DriveValue** is a modern, production-grade Machine Learning & Artificial Intelligence web application designed to predict the accurate resale value of second-hand cars in the Indian automotive market.
 
-### Academic Objectives
-1. **AI Camera Visual Recognition**: WebRTC `getUserMedia()` video feed integration allowing live photo capture and instant image-based valuation.
-2. **Practical Machine Learning Application**: Implement and compare multiple regression models (`LinearRegression`, `DecisionTreeRegressor`, `RandomForestRegressor`, `GradientBoostingRegressor`).
-3. **Feature Engineering & Preprocessing**: Normalize numeric metrics with `StandardScaler` and encode categorical values with `OneHotEncoder` via Scikit-Learn `ColumnTransformer`.
-4. **Database Integration**: Store inventory and prediction logs in MongoDB using `pymongo`.
-5. **REST API Design**: Build a lightweight Python Flask backend serving clean JSON APIs.
-6. **Modern Minimalist UI**: Deliver a high-contrast monochrome UI using HTML5, CSS3, and Vanilla JS without heavy framework bloat.
+Instead of relying on subjective dealer estimates, DriveValue utilizes a **Random Forest Regression ML pipeline** trained on 2,750+ car records across 17 major brands, coupled with an **HTML5 WebRTC Live Camera Photo Scanner** and a **Rule-Based Explanation Engine**.
 
 ---
 
-## 🛠️ 3. Technology Stack
+## 🌟 Key Features
 
-- **Frontend**: HTML5, Vanilla CSS3 (Custom Monochrome Design System), Vanilla JavaScript (ES6+), WebRTC Camera API, Chart.js.
-- **Backend**: Python 3.9+, Flask Web Framework, Gunicorn WSGI Server.
-- **Machine Learning**: Scikit-Learn, Pandas, NumPy, Joblib.
-- **Database**: MongoDB (PyMongo Driver). Compatible with local MongoDB & MongoDB Atlas.
+1. **📷 Live Camera Photo Valuation**: Capture a live photo of any vehicle using your camera or upload an image to receive instant visual attribute detection and price valuation.
+2. **🎯 Manual Specification Estimator**: Input car brand, model, manufacturing year, kilometers driven, fuel type, transmission, ownership, and condition for exact valuation.
+3. **📊 Market Valuation Range ($\pm 5.5\%$)**: Displays minimum and maximum fair market resale range.
+4. **📈 Feature Importance Chart**: Visualizes key pricing drivers (Engine CC, Year, Brand, KM driven) using **Chart.js**.
+5. **💡 Rule-Based Explanation Engine**: Generates natural language insights explaining key value drivers without requiring paid LLM API keys.
+6. **🚗 MongoDB Used Car Catalog**: Search, filter, and view 2,750+ car records by brand, fuel type, transmission, and year.
+7. **⚙️ Fail-Safe Execution**: Built with PyMongo MongoDB connection manager + local CSV fallback ensuring 100% uptime.
 
 ---
 
-## ⚡ 4. Quick Start Guide (Local Setup)
+## 🛠️ Technology Stack
 
-1. **Navigate to the workspace directory**:
+| Component | Technology Used |
+| :--- | :--- |
+| **Frontend** | HTML5, Vanilla CSS3 (Custom Monochrome Palette `#F5F5F5` / `#111111`), JavaScript (ES6+), WebRTC Camera API, Chart.js |
+| **Backend Framework** | Python 3.9+, Flask Web Framework, Vercel Serverless Python Runtime |
+| **Machine Learning** | Scikit-Learn, Pandas, NumPy, Joblib |
+| **Database** | MongoDB (PyMongo Driver) with local CSV fallback (`data/raw/cars.csv`) |
+| **Deployment** | Vercel Serverless Functions (`api/index.py` entrypoint) |
+
+---
+
+## 📊 Machine Learning Model Performance
+
+We evaluated 4 supervised regression algorithms on 2,750 vehicle records:
+
+| Algorithm | R² Score ($R^2$) | MAE (Mean Absolute Error) | RMSE (Root Mean Squared Error) | Status |
+| :--- | :---: | :---: | :---: | :--- |
+| **Random Forest Regressor** | **0.9597 (95.97%)** | **₹88,650** | **₹1,63,573** | **Selected Top Model** |
+| Gradient Boosting Regressor | 0.9503 (95.03%) | ₹1,06,876 | ₹1,81,504 | Evaluated |
+| Decision Tree Regressor | 0.9002 (90.02%) | ₹1,20,617 | ₹2,57,266 | Evaluated |
+| Linear Regression | 0.8009 (80.09%) | ₹2,58,636 | ₹3,63,409 | Evaluated |
+
+---
+
+## 🎓 College Viva & Interview Q&A (Defense Guide)
+
+### **Q1: What is the main objective of this project?**
+> **Answer**: To replace subjective manual car appraisal with a data-driven Supervised Machine Learning model that estimates second-hand car market values based on physical specs, usage, condition, and market depreciation.
+
+### **Q2: Which ML algorithm was selected and why?**
+> **Answer**: **Random Forest Regressor**. It achieved the highest $R^2$ score (**0.9597**) and lowest MAE (**₹88,650**). Random Forest handles non-linear relationships, multi-collinearity, and categorical variables better than single Decision Trees or Linear Regression.
+
+### **Q3: What are the primary factors affecting car price in your dataset?**
+> **Answer**: Based on feature importance analysis:
+> 1. **Engine Capacity (Engine CC)**: 45.2%
+> 2. **Manufacturing Year (Age)**: 24.8%
+> 3. **Brand & Model**: 13.5%
+> 4. **Kilometers Driven**: 3.4%
+> 5. **Ownership & Condition**: 4.1%
+
+### **Q4: How does the AI Camera Scanner work?**
+> **Answer**: It leverages the HTML5 WebRTC `getUserMedia()` API to stream video feed into an HTML5 Canvas. When the user snaps a photo, the image is converted into a base64 string and sent to `/api/predict-image`, where visual attribute extraction and market regression formulas compute the price.
+
+### **Q5: How does the app handle database failure or offline mode?**
+> **Answer**: `DatabaseManager` in `database/db.py` attempts a MongoDB connection with an 800ms timeout. If MongoDB is unreachable (e.g. no internet or local database down), it seamlessly switches to an in-memory CSV cache (`data/raw/cars.csv`), ensuring zero app crashes.
+
+### **Q6: How are human-readable explanations generated without paid LLM API keys?**
+> **Answer**: We built a deterministic rule-based natural language generator (`generate_price_explanation`). It checks vehicle age, mileage threshold, ownership, and condition ratings to output structured, grammatically coherent sentences explaining positive and negative price drivers.
+
+### **Q7: How is the application deployed on Vercel?**
+> **Answer**: Vercel routes incoming HTTP requests via `vercel.json` to `api/index.py`. Flask initializes explicit template and static paths, and `includeFiles` packages the required templates, datasets, and static files into a lightweight AWS Lambda container.
+
+---
+
+## ⚡ Quick Start Guide (Local Setup)
+
+1. **Clone Repository & Navigate**:
    ```bash
+   git clone git@github.com:AnshuS17/DriveValue.git
    cd DriveWorth
    ```
 
-2. **Activate Virtual Environment & Install dependencies**:
+2. **Install Dependencies**:
    ```bash
-   python3 -m venv venv
-   source venv/bin/activate
    pip install -r requirements.txt
    ```
 
-3. **Train the ML Model Pipeline**:
+3. **(Optional) Re-train ML Model**:
    ```bash
    python -m ml.train_model
    ```
 
-4. **Seed the MongoDB Database**:
-   ```bash
-   python database/seed_database.py
-   ```
-
-5. **Run the Flask Web Server**:
+4. **Run Flask Application**:
    ```bash
    python app.py
    ```
 
-6. **Open Application in Web Browser**:
+5. **Open in Browser**:
    Navigate to `http://127.0.0.1:5001` or `http://127.0.0.1:5000`
 
 ---
 
-## 🔌 5. API Specification
+## 🔌 API Endpoints Summary
 
 | Endpoint | Method | Description |
 | :--- | :--- | :--- |
-| `GET /api/stats` | `GET` | Returns database record counts, brand count, avg price, top fuel type |
-| `GET /api/brands-models` | `GET` | Returns brand-to-model catalog mapping for dynamic dropdowns |
-| `GET /api/cars` | `GET` | Paginated used car listings with search, brand, fuel, transmission & year filters |
-| `GET /api/cars/<id>` | `GET` | Returns full vehicle details by ID |
-| `POST /api/predict` | `POST` | Accepts JSON car specs, runs ML model, returns price, range, explanation & similar cars |
-| `POST /api/predict-image` | `POST` | Accepts camera photo / base64 image, extracts visual features, runs ML model & returns valuation |
-| `GET /api/model-info` | `GET` | Returns empirical model evaluation metrics and feature importances |
+| `GET /` | `GET` | Home Page |
+| `GET /predict` | `GET` | Vehicle Valuation & Camera Scanner Page |
+| `GET /cars` | `GET` | Used Cars Catalog & Search Page |
+| `GET /admin` | `GET` | Admin Portal for Listing Management |
+| `GET /api/stats` | `GET` | Returns DB vehicle counts, average price & brands |
+| `GET /api/brands-models` | `GET` | Brand-to-model catalog mapping for dynamic UI dropdowns |
+| `GET /api/cars` | `GET` | Paginated car inventory with search & filter |
+| `POST /api/predict` | `POST` | Accepts vehicle JSON parameters and returns ML prediction |
+| `POST /api/predict-image` | `POST` | Accepts base64 image from camera and returns valuation |
+| `GET /api/model-info` | `GET` | Returns ML evaluation metrics and feature importances |
+
+---
+
+## 📄 License & Credits
+
+Developed for academic presentation & open-source demonstration.  
+**Live Application**: [https://drivevalue-five.vercel.app/predict](https://drivevalue-five.vercel.app/predict)
