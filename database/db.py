@@ -77,7 +77,7 @@ class DatabaseManager:
                 print(f"Error loading CSV fallback dataset: {e}")
 
     def get_stats(self):
-        if self.is_connected and self.cars_collection:
+        if self.is_connected and self.cars_collection is not None:
             try:
                 total_cars = self.cars_collection.count_documents({})
                 brands = len(self.cars_collection.distinct("brand"))
@@ -121,7 +121,7 @@ class DatabaseManager:
         }
 
     def get_cars(self, search="", brand="", fuel_type="", transmission="", year="", page=1, limit=12):
-        if self.is_connected and self.cars_collection:
+        if self.is_connected and self.cars_collection is not None:
             try:
                 query = {}
                 if search:
@@ -179,7 +179,7 @@ class DatabaseManager:
         return {"cars": paginated, "total": total, "page": page, "pages": max(1, (total + limit - 1) // limit)}
 
     def get_car_by_id(self, car_id):
-        if self.is_connected and self.cars_collection:
+        if self.is_connected and self.cars_collection is not None:
             from bson.objectid import ObjectId
             try:
                 doc = self.cars_collection.find_one({"_id": ObjectId(car_id)})
@@ -195,7 +195,7 @@ class DatabaseManager:
         return None
 
     def add_car(self, car_data):
-        if self.is_connected and self.cars_collection:
+        if self.is_connected and self.cars_collection is not None:
             try:
                 result = self.cars_collection.insert_one(car_data)
                 return str(result.inserted_id)
@@ -207,7 +207,7 @@ class DatabaseManager:
         return car_data["_id"]
 
     def delete_car(self, car_id):
-        if self.is_connected and self.cars_collection:
+        if self.is_connected and self.cars_collection is not None:
             from bson.objectid import ObjectId
             try:
                 res = self.cars_collection.delete_one({"_id": ObjectId(car_id)})
@@ -220,7 +220,7 @@ class DatabaseManager:
         return len(self._fallback_cars) < initial
 
     def get_similar_cars(self, brand, fuel_type, predicted_price, limit=4):
-        if self.is_connected and self.cars_collection:
+        if self.is_connected and self.cars_collection is not None:
             try:
                 min_p = predicted_price * 0.75
                 max_p = predicted_price * 1.25
@@ -259,7 +259,7 @@ class DatabaseManager:
             "predicted_price": predicted_price,
             "created_at": datetime.now(timezone.utc)
         }
-        if self.is_connected and self.predictions_collection:
+        if self.is_connected and self.predictions_collection is not None:
             try:
                 self.predictions_collection.insert_one(doc)
             except Exception as e:
