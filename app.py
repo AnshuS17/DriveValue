@@ -2,7 +2,7 @@ import os
 import json
 import random
 import base64
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 
 from database.db import db_manager
 from utils.helpers import format_currency, calculate_market_range, generate_price_explanation, generate_image_price_explanation
@@ -16,6 +16,10 @@ app = Flask(
     static_folder=os.path.join(BASE_DIR, "static")
 )
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "drive-value-ai-college-project-secret-key-2026")
+
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
+
 
 
 MODEL_PATH = os.path.join(BASE_DIR, "model", "car_price_model.pkl")
@@ -108,11 +112,44 @@ def about():
 
 @app.route("/admin")
 def admin():
+    if not session.get("admin_logged_in"):
+        return redirect("/admin/login")
     return render_template("admin.html")
+
+@app.route("/admin/login")
+def admin_login_page():
+    if session.get("admin_logged_in"):
+        return redirect("/admin")
+    return render_template("admin_login.html")
 
 # =========================================================================
 # REST API ENDPOINTS
 # =========================================================================
+
+@app.route("/api/admin/login", methods=["POST"])
+def admin_login_api():
+    """Authenticates admin credentials and creates session."""
+    data = request.get_json() or {}
+    username = str(data.get("username", "")).strip()
+    password = str(data.get("password", "")).strip()
+
+    if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+        session["admin_logged_in"] = True
+        return jsonify({"success": True, "message": "Admin authentication successful"})
+    else:
+        return jsonify({"success": False, "message": "Invalid username or password"}), 401
+
+@app.route("/api/admin/logout", methods=["POST", "GET"])
+def admin_logout_api():
+    """Logs out admin session."""
+    session.pop("admin_logged_in", None)
+    return jsonify({"success": True, "message": "Logged out successfully"})
+
+@app.route("/api/admin/status", methods=["GET"])
+def admin_status_api():
+    """Returns admin authentication session status."""
+    return jsonify({"success": True, "logged_in": bool(session.get("admin_logged_in"))})
+
 
 @app.route("/api/stats", methods=["GET"])
 def get_stats():
@@ -177,6 +214,8 @@ def get_car_detail(car_id):
 @app.route("/api/cars", methods=["POST"])
 def add_car():
     """Adds a new car record to MongoDB (Admin function)."""
+    if not session.get("admin_logged_in"):
+        return jsonify({"success": False, "message": "Unauthorized. Please log in to admin portal."}), 401
     try:
         data = request.get_json()
         if not data:
@@ -213,6 +252,8 @@ def add_car():
 @app.route("/api/cars/<car_id>", methods=["DELETE"])
 def delete_car(car_id):
     """Deletes a car record by ID (Admin function)."""
+    if not session.get("admin_logged_in"):
+        return jsonify({"success": False, "message": "Unauthorized. Please log in to admin portal."}), 401
     success = db_manager.delete_car(car_id)
     if success:
         return jsonify({"success": True, "message": "Car deleted successfully"})

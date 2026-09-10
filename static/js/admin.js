@@ -10,7 +10,22 @@ document.addEventListener("DOMContentLoaded", () => {
     setupAdminTabs();
     setupAdminAddCarForm();
     setupAdminSearch();
+    setupAdminLogout();
 });
+
+function setupAdminLogout() {
+    const logoutBtn = document.getElementById("adminLogoutBtn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", async () => {
+            if (confirm("Are you sure you want to log out of Admin Dashboard?")) {
+                try {
+                    await fetch("/api/admin/logout", { method: "POST" });
+                } catch (e) {}
+                window.location.href = "/admin/login";
+            }
+        });
+    }
+}
 
 async function loadAdminStats() {
     try {

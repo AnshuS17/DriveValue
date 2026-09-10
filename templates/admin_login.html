@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}DriveValue | Admin Login{% endblock %}
+
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <span class="badge-dot-container"><span class="badge-dot"></span> SECURE ACCESS PORTAL</span>
+        <h1 class="page-title">Admin Authentication</h1>
+        <p class="page-subtitle">Please enter your administrative credentials to access the inventory management dashboard.</p>
+    </div>
+</div>
+
+<div class="container" style="max-width: 480px; margin-bottom: 4rem;">
+    <div class="card p-4 shadow-sm" style="background: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px;">
+        
+        <!-- Error Alert -->
+        <div id="loginErrorAlert" class="alert alert-danger hidden mb-4" style="display: none; padding: 12px; background: #fee2e2; border: 1px solid #f87171; color: #991b1b; border-radius: 8px; font-size: 0.9rem;">
+            Invalid username or password. Please try again.
+        </div>
+
+        <form id="adminLoginForm">
+            <div class="form-group mb-3">
+                <label for="adminUsername" style="font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; display: block; color: #111111;">Username</label>
+                <input type="text" id="adminUsername" name="username" class="form-control" placeholder="Enter admin username" value="admin" required style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+            </div>
+
+            <div class="form-group mb-4">
+                <label for="adminPassword" style="font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; display: block; color: #111111;">Password</label>
+                <input type="password" id="adminPassword" name="password" class="form-control" placeholder="Enter admin password" value="admin123" required style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
+            </div>
+
+            <button type="submit" id="loginSubmitBtn" class="btn btn-primary btn-lg" style="width: 100%; padding: 14px; background: #111111; color: #ffffff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s ease;">
+                Sign In to Admin Portal
+            </button>
+        </form>
+
+        <!-- Demo Credentials Box -->
+        <div class="mt-4 p-3" style="background: #f9fafb; border: 1px dashed #d1d5db; border-radius: 8px; font-size: 0.85rem; color: #4b5563;">
+            <div style="font-weight: 600; color: #111111; margin-bottom: 4px;">🔑 Demo Credentials (College Presentation):</div>
+            <div>• <strong>Username:</strong> <code>admin</code></div>
+            <div>• <strong>Password:</strong> <code>admin123</code></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("adminLoginForm");
+    const errorAlert = document.getElementById("loginErrorAlert");
+    const submitBtn = document.getElementById("loginSubmitBtn");
+
+    form.addEventListener("submit", async function(e) {
+        e.preventDefault();
+        errorAlert.style.display = "none";
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Authenticating...";
+
+        const username = document.getElementById("adminUsername").value.trim();
+        const password = document.getElementById("adminPassword").value.trim();
+
+        try {
+            const response = await fetch("/api/admin/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                window.location.href = "/admin";
+            } else {
+                errorAlert.textContent = data.message || "Invalid username or password.";
+                errorAlert.style.display = "block";
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Sign In to Admin Portal";
+            }
+        } catch (err) {
+            errorAlert.textContent = "Connection error. Please try again.";
+            errorAlert.style.display = "block";
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Sign In to Admin Portal";
+        }
+    });
+});
+</script>
+{% endblock %}
