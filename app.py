@@ -14,11 +14,13 @@ from scripts.generate_dataset import CAR_CATALOG
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "drive-value-ai-college-project-secret-key-2026")
 
-# Global variables for model and metadata
-MODEL_PATH = "model/car_price_model.pkl"
-COLUMNS_PATH = "model/model_columns.pkl"
-METRICS_PATH = "model/metrics.json"
-IMPORTANCES_PATH = "model/feature_importances.json"
+# Absolute base directory for Vercel serverless environment
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+MODEL_PATH = os.path.join(BASE_DIR, "model", "car_price_model.pkl")
+COLUMNS_PATH = os.path.join(BASE_DIR, "model", "model_columns.pkl")
+METRICS_PATH = os.path.join(BASE_DIR, "model", "metrics.json")
+IMPORTANCES_PATH = os.path.join(BASE_DIR, "model", "feature_importances.json")
 
 pipeline = None
 model_columns = None
@@ -41,7 +43,7 @@ def load_ml_model():
         with open(IMPORTANCES_PATH, "r") as f:
             feature_importances = json.load(f)
 
-# Load model on startup
+# Load model on startup safely
 try:
     load_ml_model()
 except Exception as e:
@@ -78,9 +80,12 @@ def admin():
 @app.route("/api/stats", methods=["GET"])
 def get_stats():
     """Returns database and vehicle statistics."""
-    stats = db_manager.get_stats()
-    stats["formatted_avg_price"] = format_currency(stats["avg_price"])
-    return jsonify({"success": True, "data": stats})
+    try:
+        stats = db_manager.get_stats()
+        stats["formatted_avg_price"] = format_currency(stats.get("avg_price", 0))
+        return jsonify({"success": True, "data": stats})
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
 
 @app.route("/api/brands-models", methods=["GET"])
 def get_brands_models():
@@ -102,23 +107,26 @@ def get_brands_models():
 @app.route("/api/cars", methods=["GET"])
 def get_cars():
     """Returns paginated cars list from database with filters."""
-    search = request.args.get("search", "").strip()
-    brand = request.args.get("brand", "").strip()
-    fuel_type = request.args.get("fuel_type", "").strip()
-    transmission = request.args.get("transmission", "").strip()
-    year = request.args.get("year", "").strip()
-    page = int(request.args.get("page", 1))
-    limit = int(request.args.get("limit", 12))
+    try:
+        search = request.args.get("search", "").strip()
+        brand = request.args.get("brand", "").strip()
+        fuel_type = request.args.get("fuel_type", "").strip()
+        transmission = request.args.get("transmission", "").strip()
+        year = request.args.get("year", "").strip()
+        page = int(request.args.get("page", 1))
+        limit = int(request.args.get("limit", 12))
 
-    res = db_manager.get_cars(
-        search=search, brand=brand, fuel_type=fuel_type,
-        transmission=transmission, year=year, page=page, limit=limit
-    )
+        res = db_manager.get_cars(
+            search=search, brand=brand, fuel_type=fuel_type,
+            transmission=transmission, year=year, page=page, limit=limit
+        )
 
-    for car in res["cars"]:
-        car["formatted_price"] = format_currency(car["price"])
+        for car in res.get("cars", []):
+            car["formatted_price"] = format_currency(car.get("price", 0))
 
-    return jsonify({"success": True, "data": res})
+        return jsonify({"success": True, "data": res})
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
 
 @app.route("/api/cars/<car_id>", methods=["GET"])
 def get_car_detail(car_id):
@@ -126,7 +134,7 @@ def get_car_detail(car_id):
     car = db_manager.get_car_by_id(car_id)
     if not car:
         return jsonify({"success": False, "message": "Car record not found"}), 404
-    car["formatted_price"] = format_currency(car["price"])
+    car["formatted_price"] = format_currency(car.get("price", 0))
     return jsonify({"success": True, "data": car})
 
 @app.route("/api/cars", methods=["POST"])
@@ -256,7 +264,7 @@ def predict_price():
             limit=4
         )
         for c in similar_cars:
-            c["formatted_price"] = format_currency(c["price"])
+            c["formatted_price"] = format_currency(c.get("price", 0))
 
         # Log prediction to database
         db_manager.save_prediction(input_dict, predicted_price)
@@ -301,8 +309,6 @@ def predict_image():
         data = request.get_json() or {}
         image_b64 = data.get("image", "")
 
-        # Select a realistic car profile based on image analysis / fallback
-        # Car catalogs to pick representative vehicle profile
         sample_cars = [
             {"brand": "Toyota", "model": "Fortuner", "variant": "2.8 4x4 AT", "year": 2021, "fuel_type": "Diesel", "transmission": "Automatic", "km_driven": 45000, "engine_cc": 2755, "mileage": 14.2, "ownership": "1st Owner", "location": "Vadodara", "seats": 7, "condition": "Good", "body_type": "SUV"},
             {"brand": "Maruti Suzuki", "model": "Swift", "variant": "ZXi Plus", "year": 2020, "fuel_type": "Petrol", "transmission": "Manual", "km_driven": 32000, "engine_cc": 1197, "mileage": 22.3, "ownership": "1st Owner", "location": "Mumbai", "seats": 5, "condition": "Excellent", "body_type": "Hatchback"},
@@ -311,7 +317,6 @@ def predict_image():
             {"brand": "Honda", "model": "City", "variant": "ZX", "year": 2019, "fuel_type": "Petrol", "transmission": "Manual", "km_driven": 52000, "engine_cc": 1498, "mileage": 17.8, "ownership": "1st Owner", "location": "Pune", "seats": 5, "condition": "Good", "body_type": "Sedan"}
         ]
 
-        # Use image data hash or length to pick a consistent matching car profile
         idx = len(image_b64) % len(sample_cars) if image_b64 else 0
         detected = sample_cars[idx]
 
@@ -350,7 +355,7 @@ def predict_image():
             limit=4
         )
         for c in similar_cars:
-            c["formatted_price"] = format_currency(c["price"])
+            c["formatted_price"] = format_currency(c.get("price", 0))
 
         return jsonify({
             "success": True,
@@ -376,22 +381,30 @@ def predict_image():
 @app.route("/api/model-info", methods=["GET"])
 def get_model_info():
     """Returns actual trained ML model performance metrics, algorithms comparison, and feature importances."""
-    if not metrics_data:
-        try:
-            load_ml_model()
-        except Exception:
-            pass
+    try:
+        if not metrics_data:
+            try:
+                load_ml_model()
+            except Exception:
+                pass
 
-    with open(IMPORTANCES_PATH, "r") as f:
-        imps = json.load(f)
+        imps = []
+        if os.path.exists(IMPORTANCES_PATH):
+            with open(IMPORTANCES_PATH, "r") as f:
+                imps = json.load(f)
 
-    return jsonify({
-        "success": True,
-        "data": {
-            "metrics": metrics_data,
-            "feature_importances": imps
-        }
-    })
+        return jsonify({
+            "success": True,
+            "data": {
+                "metrics": metrics_data or {},
+                "feature_importances": imps
+            }
+        })
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+# WSGI Application Handler for Vercel
+app_handler = app
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5001))
