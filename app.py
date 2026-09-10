@@ -8,10 +8,15 @@ from database.db import db_manager
 from utils.helpers import format_currency, calculate_market_range, generate_price_explanation, generate_image_price_explanation
 from scripts.generate_dataset import CAR_CATALOG
 
-app = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+app = Flask(
+    __name__,
+    template_folder=os.path.join(BASE_DIR, "templates"),
+    static_folder=os.path.join(BASE_DIR, "static")
+)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "drive-value-ai-college-project-secret-key-2026")
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 MODEL_PATH = os.path.join(BASE_DIR, "model", "car_price_model.pkl")
 COLUMNS_PATH = os.path.join(BASE_DIR, "model", "model_columns.pkl")
