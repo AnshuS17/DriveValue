@@ -6,8 +6,10 @@ def format_currency(amount):
     Formats a numeric amount into Indian Rupee format.
     Example: 2485000 -> ₹24,85,000
     """
+    if amount is None:
+        return "₹0"
     try:
-        val = int(round(amount))
+        val = int(round(float(amount)))
         s = str(val)
         if len(s) <= 3:
             return f"₹{s}"
@@ -20,13 +22,15 @@ def format_currency(amount):
         res = other + res + "," + last_three
         return f"₹{res}"
     except Exception:
-        return f"₹{amount:,}"
+        return f"₹{amount}"
 
 def calculate_market_range(predicted_price, percentage=0.055):
     """
     Calculates approximate market range (+/- 5.5%).
     Returns min_price and max_price rounded to nearest ₹5,000.
     """
+    if predicted_price is None:
+        predicted_price = 850000
     delta = predicted_price * percentage
     min_p = int(round((predicted_price - delta) / 5000.0) * 5000)
     max_p = int(round((predicted_price + delta) / 5000.0) * 5000)
