@@ -2,7 +2,6 @@ import os
 import json
 import random
 import base64
-import pandas as pd
 from flask import Flask, render_template, request, jsonify
 
 from database.db import db_manager
@@ -26,20 +25,32 @@ feature_importances = None
 
 def load_ml_model():
     global pipeline, model_columns, metrics_data, feature_importances
+    # Always load static JSON metrics & feature importances if present
+    if os.path.exists(METRICS_PATH):
+        try:
+            with open(METRICS_PATH, "r") as f:
+                metrics_data = json.load(f)
+        except Exception as e:
+            print(f"--> Notice: Error reading metrics.json: {e}")
+
+    if os.path.exists(IMPORTANCES_PATH):
+        try:
+            with open(IMPORTANCES_PATH, "r") as f:
+                feature_importances = json.load(f)
+        except Exception as e:
+            print(f"--> Notice: Error reading feature_importances.json: {e}")
+
+    # Attempt to load joblib pipeline if binary exists and joblib is installed
     try:
-        import joblib
-        if os.path.exists(MODEL_PATH) and os.path.exists(METRICS_PATH):
+        if os.path.exists(MODEL_PATH):
+            import joblib
             pipeline = joblib.load(MODEL_PATH)
             if os.path.exists(COLUMNS_PATH):
                 model_columns = joblib.load(COLUMNS_PATH)
-            with open(METRICS_PATH, "r") as f:
-                metrics_data = json.load(f)
-            if os.path.exists(IMPORTANCES_PATH):
-                with open(IMPORTANCES_PATH, "r") as f:
-                    feature_importances = json.load(f)
             print("--> Successfully loaded trained ML model pipeline.")
     except Exception as e:
-        print(f"--> Notice: ML Model pipeline fallback mode enabled: {e}")
+        pipeline = None
+        print(f"--> Notice: Using lightweight rule-based regression engine on serverless: {e}")
 
 try:
     load_ml_model()
@@ -223,8 +234,11 @@ def predict_price():
         seats = int(data.get("seats", 5))
         insurance_valid = bool(data.get("insurance_valid", True))
 
+        predicted_price = None
+
         if pipeline is not None:
             try:
+                import pandas as pd
                 input_dict = {
                     "brand": [str(data["brand"]).strip()],
                     "model": [str(data["model"]).strip()],
@@ -246,7 +260,8 @@ def predict_price():
                 predicted_price = int(round(raw_pred / 5000.0) * 5000)
             except Exception:
                 predicted_price = calculate_fallback_price(data)
-        else:
+
+        if predicted_price is None:
             predicted_price = calculate_fallback_price(data)
 
         predicted_price = max(100000, predicted_price)
@@ -378,6 +393,9 @@ def get_model_info():
         })
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
+
+# WSGI Application Handler for Vercel
+app_handler = app
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5001))

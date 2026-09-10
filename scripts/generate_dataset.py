@@ -5,10 +5,6 @@ import random
 # Set random seed for reproducible dataset generation
 random.seed(42)
 
-# Directory setup
-os.makedirs("data/raw", exist_ok=True)
-os.makedirs("data/processed", exist_ok=True)
-
 # Brand, Model, Variants, and specs mapping
 CAR_CATALOG = {
     "Maruti Suzuki": {
@@ -188,6 +184,8 @@ def generate_records(num_records=2750):
     return records
 
 if __name__ == "__main__":
+    os.makedirs("data/raw", exist_ok=True)
+    os.makedirs("data/processed", exist_ok=True)
     records = generate_records(2750)
     fieldnames = ["brand", "model", "variant", "year", "fuel_type", "transmission", "km_driven", "engine_cc", "mileage", "ownership", "location", "seats", "condition", "insurance_valid", "price"]
     
