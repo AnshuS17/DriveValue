@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}DriveWorth | Admin Portal & Database Management{% endblock %}
+
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <span class="badge-dot-container"><span class="badge-dot"></span> MONGODB MANAGEMENT PORTAL</span>
+        <h1 class="page-title">Admin Dashboard</h1>
+        <p class="page-subtitle">Manage used car inventory, view database stats, add listings, or delete records.</p>
+    </div>
+</div>
+
+<div class="container admin-container">
+    <!-- Admin Notice -->
+    <div class="alert alert-info mb-4">
+        <strong>Demo Admin Note:</strong> This is a simplified administrative management dashboard designed for college project demonstration.
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="stats-container mb-4">
+        <div class="stat-card">
+            <h3 class="stat-value" id="adminTotalCars">--</h3>
+            <p class="stat-label">Total Listings</p>
+        </div>
+        <div class="stat-card">
+            <h3 class="stat-value" id="adminTotalBrands">--</h3>
+            <p class="stat-label">Total Brands</p>
+        </div>
+        <div class="stat-card">
+            <h3 class="stat-value" id="adminAvgPrice">--</h3>
+            <p class="stat-label">Average Listing Price</p>
+        </div>
+        <div class="stat-card">
+            <h3 class="stat-value" id="adminTopFuel">--</h3>
+            <p class="stat-label">Most Common Fuel</p>
+        </div>
+    </div>
+
+    <!-- Tabs & Action Bar -->
+    <div class="admin-action-bar">
+        <div class="tab-buttons">
+            <button class="tab-btn active" id="tabViewCars">View Inventory</button>
+            <button class="tab-btn" id="tabAddCar">+ Add New Car</button>
+        </div>
+
+        <div class="admin-search-wrapper" id="adminSearchWrapper">
+            <input type="text" id="adminSearchInput" class="form-control" placeholder="Search inventory...">
+        </div>
+    </div>
+
+    <!-- Tab 1: View / Manage Inventory Table -->
+    <div class="card tab-content" id="contentViewCars">
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Brand & Model</th>
+                        <th>Year</th>
+                        <th>Fuel</th>
+                        <th>Transmission</th>
+                        <th>KM Driven</th>
+                        <th>Location</th>
+                        <th>Listed Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTableBody">
+                    <!-- Injected via JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Admin Pagination -->
+        <div class="pagination-container mt-4" id="adminPagination">
+            <!-- Injected via JS -->
+        </div>
+    </div>
+
+    <!-- Tab 2: Add Car Form (Hidden by Default) -->
+    <div class="card tab-content hidden" id="contentAddCar">
+        <h3 class="card-title mb-3">Add New Vehicle Listing</h3>
+        <p class="text-secondary mb-4">Insert a new car record directly into MongoDB database.</p>
+
+        <form id="addCarForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="addBrand">Brand *</label>
+                    <input type="text" id="addBrand" name="brand" class="form-control" placeholder="e.g. Maruti Suzuki, Toyota" required>
+                </div>
+                <div class="form-group">
+                    <label for="addModel">Model *</label>
+                    <input type="text" id="addModel" name="model" class="form-control" placeholder="e.g. Swift, Fortuner" required>
+                </div>
+                <div class="form-group">
+                    <label for="addVariant">Variant</label>
+                    <input type="text" id="addVariant" name="variant" class="form-control" placeholder="e.g. ZXi Plus, 2.8 4x4">
+                </div>
+                <div class="form-group">
+                    <label for="addYear">Year *</label>
+                    <input type="number" id="addYear" name="year" class="form-control" value="2022" min="1995" max="2026" required>
+                </div>
+                <div class="form-group">
+                    <label for="addPrice">Price (₹) *</label>
+                    <input type="number" id="addPrice" name="price" class="form-control" placeholder="e.g. 750000" required>
+                </div>
+                <div class="form-group">
+                    <label for="addKm">KM Driven *</label>
+                    <input type="number" id="addKm" name="km_driven" class="form-control" placeholder="e.g. 35000" required>
+                </div>
+                <div class="form-group">
+                    <label for="addFuel">Fuel Type *</label>
+                    <select id="addFuel" name="fuel_type" class="form-control" required>
+                        <option value="Petrol">Petrol</option>
+                        <option value="Diesel">Diesel</option>
+                        <option value="CNG">CNG</option>
+                        <option value="Electric">Electric</option>
+                        <option value="Hybrid">Hybrid</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="addTrans">Transmission *</label>
+                    <select id="addTrans" name="transmission" class="form-control" required>
+                        <option value="Manual">Manual</option>
+                        <option value="Automatic">Automatic</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="addEngine">Engine CC</label>
+                    <input type="number" id="addEngine" name="engine_cc" class="form-control" value="1197">
+                </div>
+                <div class="form-group">
+                    <label for="addMileage">Mileage (kmpl)</label>
+                    <input type="number" step="0.1" id="addMileage" name="mileage" class="form-control" value="20.0">
+                </div>
+                <div class="form-group">
+                    <label for="addOwnership">Ownership</label>
+                    <select id="addOwnership" name="ownership" class="form-control">
+                        <option value="1st Owner">1st Owner</option>
+                        <option value="2nd Owner">2nd Owner</option>
+                        <option value="3rd Owner">3rd Owner</option>
+                        <option value="4+ Owners">4+ Owners</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="addLocation">Location</label>
+                    <input type="text" id="addLocation" name="location" class="form-control" value="Mumbai">
+                </div>
+                <div class="form-group">
+                    <label for="addCondition">Condition</label>
+                    <select id="addCondition" name="condition" class="form-control">
+                        <option value="Excellent">Excellent</option>
+                        <option value="Good">Good</option>
+                        <option value="Fair">Fair</option>
+                        <option value="Poor">Poor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="addInsurance">Insurance Status</label>
+                    <select id="addInsurance" name="insurance_valid" class="form-control">
+                        <option value="true">Valid Insurance</option>
+                        <option value="false">Expired</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" id="submitAddCarBtn" class="btn btn-primary btn-lg">Add Car to Database</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

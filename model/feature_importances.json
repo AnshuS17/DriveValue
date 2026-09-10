@@ -1,0 +1,70 @@
+[
+    {
+        "feature": "Engine Cc",
+        "importance": 45.27
+    },
+    {
+        "feature": "Year",
+        "importance": 24.82
+    },
+    {
+        "feature": "Brand",
+        "importance": 7.79
+    },
+    {
+        "feature": "Model",
+        "importance": 5.73
+    },
+    {
+        "feature": "Seats",
+        "importance": 4.24
+    },
+    {
+        "feature": "Km Driven",
+        "importance": 3.37
+    },
+    {
+        "feature": "Ownership",
+        "importance": 2.43
+    },
+    {
+        "feature": "Condition",
+        "importance": 1.76
+    },
+    {
+        "feature": "Transmission",
+        "importance": 1.65
+    },
+    {
+        "feature": "Mileage",
+        "importance": 1.53
+    },
+    {
+        "feature": "Location",
+        "importance": 1.01
+    },
+    {
+        "feature": "Insurance Valid",
+        "importance": 0.13
+    },
+    {
+        "feature": "Fuel Type Diesel",
+        "importance": 0.12
+    },
+    {
+        "feature": "Fuel Type Petrol",
+        "importance": 0.09
+    },
+    {
+        "feature": "Fuel Type Hybrid",
+        "importance": 0.04
+    },
+    {
+        "feature": "Fuel Type Cng",
+        "importance": 0.0
+    },
+    {
+        "feature": "Fuel Type Electric",
+        "importance": 0.0
+    }
+]

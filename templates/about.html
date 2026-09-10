@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}DriveValue | About ML Model & Architecture{% endblock %}
+
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <span class="badge-dot-container"><span class="badge-dot"></span> ACADEMIC MACHINE LEARNING DOCUMENTATION</span>
+        <h1 class="page-title">How the ML Model Works</h1>
+        <p class="page-subtitle">A technical explanation of the end-to-end Machine Learning & Camera AI Scanner pipeline powering DriveValue.</p>
+    </div>
+</div>
+
+<div class="container about-container">
+    <!-- Model Performance Dashboard Card -->
+    <div class="card metrics-card mb-4">
+        <div class="card-header-flex">
+            <div>
+                <h3 class="card-title">Trained Model Evaluation Metrics</h3>
+                <p class="card-subtitle">Empirical performance evaluated on 20% test split from dataset.</p>
+            </div>
+            <span class="status-badge" id="bestModelBadge">Best Model: Random Forest Regressor</span>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <span class="metric-label">R² Score (Variance Explained)</span>
+                <span class="metric-value" id="metricR2">0.9597</span>
+                <span class="metric-desc">Higher is better (&gt;0.85 target)</span>
+            </div>
+
+            <div class="metric-box">
+                <span class="metric-label">Mean Absolute Error (MAE)</span>
+                <span class="metric-value" id="metricMAE">₹88,650</span>
+                <span class="metric-desc">Average absolute error in rupees</span>
+            </div>
+
+            <div class="metric-box">
+                <span class="metric-label">Root Mean Squared Error (RMSE)</span>
+                <span class="metric-value" id="metricRMSE">₹1,63,573</span>
+                <span class="metric-desc">Penalizes large prediction errors</span>
+            </div>
+
+            <div class="metric-box">
+                <span class="metric-label">Training Dataset Size</span>
+                <span class="metric-value" id="metricDatasetSize">2,750</span>
+                <span class="metric-desc">Used car market records</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ML Workflow Pipeline Diagram -->
+    <div class="card mb-4">
+        <h3 class="card-title text-center mb-4">Machine Learning Pipeline Workflow</h3>
+        
+        <div class="pipeline-flow">
+            <div class="pipeline-step">
+                <div class="step-box">Dataset (cars.csv)</div>
+                <div class="flow-arrow">&rarr;</div>
+            </div>
+            <div class="pipeline-step">
+                <div class="step-box">Data Cleaning</div>
+                <div class="flow-arrow">&rarr;</div>
+            </div>
+            <div class="pipeline-step">
+                <div class="step-box">Feature Selection</div>
+                <div class="flow-arrow">&rarr;</div>
+            </div>
+            <div class="pipeline-step">
+                <div class="step-box">Encoding & Scaling</div>
+                <div class="flow-arrow">&rarr;</div>
+            </div>
+            <div class="pipeline-step">
+                <div class="step-box">Train / Test Split</div>
+                <div class="flow-arrow">&rarr;</div>
+            </div>
+            <div class="pipeline-step">
+                <div class="step-box">ML Model Training</div>
+                <div class="flow-arrow">&rarr;</div>
+            </div>
+            <div class="pipeline-step">
+                <div class="step-box">Evaluation & Export</div>
+                <div class="flow-arrow">&rarr;</div>
+            </div>
+            <div class="pipeline-step">
+                <div class="step-box active">Price Prediction</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model Comparison Table -->
+    <div class="card mb-4">
+        <h3 class="card-title mb-2">Algorithm Comparison & Selection</h3>
+        <p class="text-secondary mb-4">During model training, four regression algorithms were evaluated to select the best performer based on test R² score.</p>
+        
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Algorithm</th>
+                        <th>R² Score</th>
+                        <th>MAE (₹)</th>
+                        <th>RMSE (₹)</th>
+                        <th>Selection Status</th>
+                    </tr>
+                </thead>
+                <tbody id="comparisonTableBody">
+                    <tr>
+                        <td>Random Forest Regressor</td>
+                        <td>0.9597</td>
+                        <td>₹88,650</td>
+                        <td>₹1,63,573</td>
+                        <td><span class="badge badge-success">Selected (Best)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Gradient Boosting Regressor</td>
+                        <td>0.9503</td>
+                        <td>₹1,06,876</td>
+                        <td>₹1,81,503</td>
+                        <td><span class="badge badge-neutral">Evaluated</span></td>
+                    </tr>
+                    <tr>
+                        <td>Decision Tree Regressor</td>
+                        <td>0.9002</td>
+                        <td>₹1,20,617</td>
+                        <td>₹2,57,266</td>
+                        <td><span class="badge badge-neutral">Evaluated</span></td>
+                    </tr>
+                    <tr>
+                        <td>Linear Regression</td>
+                        <td>0.8009</td>
+                        <td>₹2,58,636</td>
+                        <td>₹3,63,409</td>
+                        <td><span class="badge badge-neutral">Evaluated</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- College Viva Defense Section -->
+    <div class="grid-2col gap-4">
+        <div class="card">
+            <h3 class="card-title mb-3">What is Machine Learning in this context?</h3>
+            <p class="text-body mb-3">
+                Machine Learning allows computers to learn patterns directly from market data rather than using rigid hardcoded rules. 
+            </p>
+            <p class="text-body">
+                In DriveValue, the <strong>Random Forest Regressor</strong> creates an ensemble of 100 decision trees. Each tree evaluates subsets of vehicle features (Age, Kilometers, Brand, Fuel Type, Transmission, Engine CC) to predict resale price, averaging predictions to reduce error and overfitting.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3 class="card-title mb-3">Key Viva Presentation Objectives</h3>
+            <ul class="viva-list">
+                <li><strong>AI Camera Photo Scanner:</strong> Uses WebRTC <code>getUserMedia()</code> to capture vehicle photos directly in browser and predict resale price.</li>
+                <li><strong>Data Processing:</strong> Applied Scikit-Learn <code>ColumnTransformer</code> with <code>StandardScaler</code> for CC/Mileage/KM and <code>OneHotEncoder</code> for categorical attributes.</li>
+                <li><strong>Model Persistence:</strong> Serialized training pipeline using <code>joblib</code> into <code>car_price_model.pkl</code> for fast API inference.</li>
+                <li><strong>Database Integration:</strong> Stored car inventory and prediction logs in MongoDB using <code>pymongo</code>.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            const res = await fetch("/api/model-info");
+            const result = await res.json();
+            if (result.success && result.data.metrics) {
+                const metrics = result.data.metrics.metrics;
+                const comp = result.data.metrics.comparison;
+                const bestModel = result.data.metrics.best_model;
+                const datasetSize = result.data.metrics.dataset_size || 2750;
+
+                document.getElementById("bestModelBadge").innerText = `Best Model: ${bestModel}`;
+                document.getElementById("metricR2").innerText = metrics.r2.toFixed(4);
+                document.getElementById("metricMAE").innerText = `₹${metrics.mae.toLocaleString('en-IN')}`;
+                document.getElementById("metricRMSE").innerText = `₹${metrics.rmse.toLocaleString('en-IN')}`;
+                document.getElementById("metricDatasetSize").innerText = datasetSize.toLocaleString('en-IN');
+
+                // Update comparison table
+                const tbody = document.getElementById("comparisonTableBody");
+                tbody.innerHTML = "";
+                for (const [algo, vals] of Object.entries(comp)) {
+                    const isBest = algo === bestModel;
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td><strong>${algo}</strong></td>
+                        <td>${vals.r2.toFixed(4)}</td>
+                        <td>₹${vals.mae.toLocaleString('en-IN')}</td>
+                        <td>₹${vals.rmse.toLocaleString('en-IN')}</td>
+                        <td>${isBest ? '<span class="badge badge-success">Selected (Best)</span>' : '<span class="badge badge-neutral">Evaluated</span>'}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            }
+        } catch (e) {
+            console.error("Error loading model info:", e);
+        }
+    });
+</script>
+{% endblock %}

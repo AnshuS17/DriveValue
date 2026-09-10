@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}DriveValue | Know What Your Car Is Really Worth{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-container">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-dot"></span> Machine Learning & Camera AI Scanner v2.0
+            </div>
+            <h1 class="hero-title">Know What Your Car Is Really Worth.</h1>
+            <p class="hero-subheadline">
+                AI-powered used car price prediction based on vehicle specifications, condition, mileage, market data, and instant camera photo scanner.
+            </p>
+            <div class="hero-cta-group">
+                <a href="/predict" class="btn btn-primary btn-lg">Predict Car Price &rarr;</a>
+                <a href="/predict#cameraSection" class="btn btn-outline btn-lg">📷 Scan Car Photo</a>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="visual-card">
+                <div class="visual-header">
+                    <div class="window-controls">
+                        <span class="control red"></span>
+                        <span class="control yellow"></span>
+                        <span class="control green"></span>
+                    </div>
+                    <span class="visual-title">DRIVEVALUE VALUATION ENGINE</span>
+                </div>
+                <div class="visual-body">
+                    <!-- Clean SVG Monochrome Automotive Silhouette -->
+                    <div class="car-outline-container">
+                        <svg class="car-svg" viewBox="0 0 500 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M40 130 C40 130 70 125 100 125 C130 125 170 100 210 75 C250 50 310 50 350 75 C370 85 410 115 440 120 C460 122 475 130 475 135 L475 150 L40 150 Z" stroke="#111111" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="120" cy="150" r="28" fill="#F5F5F5" stroke="#111111" stroke-width="4"/>
+                            <circle cx="120" cy="150" r="12" fill="#111111"/>
+                            <circle cx="390" cy="150" r="28" fill="#F5F5F5" stroke="#111111" stroke-width="4"/>
+                            <circle cx="390" cy="150" r="12" fill="#111111"/>
+                            <path d="M210 78 L210 120 M310 78 L310 120 M160 100 L350 100" stroke="#DDDDDD" stroke-width="2" stroke-dasharray="4 4"/>
+                        </svg>
+                    </div>
+
+                    <div class="valuation-sample">
+                        <div class="sample-info">
+                            <span class="sample-model">Toyota Fortuner 2.8 4x4 AT</span>
+                            <span class="sample-specs">2021 • Diesel • 45,000 km</span>
+                        </div>
+                        <div class="sample-price">
+                            <span class="price-label">Estimated Value</span>
+                            <span class="price-amount">₹24,85,000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Counter Section -->
+<section class="stats-section">
+    <div class="stats-container">
+        <div class="stat-card">
+            <h3 class="stat-value" id="statCars">2,750+</h3>
+            <p class="stat-label">Used Cars Dataset</p>
+        </div>
+        <div class="stat-card">
+            <h3 class="stat-value" id="statBrands">17+</h3>
+            <p class="stat-label">Automotive Brands</p>
+        </div>
+        <div class="stat-card">
+            <h3 class="stat-value">14</h3>
+            <p class="stat-label">Vehicle Features</p>
+        </div>
+        <div class="stat-card">
+            <h3 class="stat-value" id="statAccuracy">96%</h3>
+            <p class="stat-label">ML Model Reliability</p>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works-section">
+    <div class="section-container">
+        <div class="section-header text-center">
+            <span class="section-subtitle">TRANSPARENT PROCESS</span>
+            <h2 class="section-title">How DriveValue Works</h2>
+            <p class="section-desc">Get an accurate resale price estimation using camera photo scan or vehicle specs form.</p>
+        </div>
+
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">01</div>
+                <h3 class="step-title">Snap Photo or Enter Specs</h3>
+                <p class="step-desc">Use live camera scan to capture a photo of your car or fill in vehicle specs, year, mileage, and condition.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">02</div>
+                <h3 class="step-title">AI/ML Analyzes Data</h3>
+                <p class="step-desc">Our trained Random Forest Regressor cross-references inputs against market data patterns and feature weights.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">03</div>
+                <h3 class="step-title">Get Estimated Resale Price</h3>
+                <p class="step-desc">Receive an instant valuation, estimated market price range, feature breakdown, and similar market listings.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Value Proposition Banner -->
+<section class="banner-section">
+    <div class="banner-container">
+        <div class="banner-content">
+            <h2 class="banner-title">Ready to value your vehicle?</h2>
+            <p class="banner-subtext">Instant, data-backed second-hand car valuation powered by machine learning and camera scanner.</p>
+        </div>
+        <div class="banner-action">
+            <a href="/predict" class="btn btn-primary btn-lg">Estimate Car Value Now</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DriveValue - AI-Powered Second-Hand Car Price Prediction System. Know what your car is really worth using Machine Learning and AI Camera Photo Scanner.">
+    <title>{% block title %}DriveValue | AI Used Car Valuation & Camera Scanner{% endblock %}</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Project Styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Sticky Navbar -->
+    <header class="navbar-header">
+        <div class="navbar-container">
+            <a href="/" class="brand-logo">
+                <span class="logo-badge">DV</span>
+                <span class="logo-text">DRIVEVALUE</span>
+            </a>
+
+            <nav class="nav-menu" id="navMenu">
+                <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">Home</a>
+                <a href="/predict" class="nav-link {% if request.path == '/predict' %}active{% endif %}">Predict Price</a>
+                <a href="/cars" class="nav-link {% if request.path == '/cars' %}active{% endif %}">Cars</a>
+                <a href="/about" class="nav-link {% if request.path == '/about' %}active{% endif %}">About Model</a>
+                <a href="/admin" class="nav-link {% if request.path == '/admin' %}active{% endif %}">Admin</a>
+            </nav>
+
+            <div class="navbar-actions">
+                <a href="/predict" class="btn btn-primary btn-sm">Predict Price</a>
+                <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Content Container -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="brand-logo mb-2">
+                    <span class="logo-badge">DV</span>
+                    <span class="logo-text">DRIVEVALUE</span>
+                </div>
+                <p class="footer-tagline">Know what your car is really worth.</p>
+                <p class="footer-subtext">AI-Powered Second-Hand Car Price Prediction System with live Camera Photo Scanner. Built for academic research and used-car market valuation.</p>
+            </div>
+
+            <div class="footer-links-group">
+                <div class="footer-col">
+                    <h4 class="footer-title">Navigation</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/predict">Predict Car Price</a></li>
+                        <li><a href="/cars">Explore Used Cars</a></li>
+                        <li><a href="/about">ML Architecture</a></li>
+                        <li><a href="/admin">Admin Portal</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Technology</h4>
+                    <ul>
+                        <li><span>Python & Scikit-Learn</span></li>
+                        <li><span>Random Forest Regressor</span></li>
+                        <li><span>Camera WebRTC & AI Scanner</span></li>
+                        <li><span>Flask REST API</span></li>
+                        <li><span>MongoDB Database</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-bottom-container">
+                <p>&copy; 2026 DriveValue. AI Used Car Price Prediction System. Academic College Project.</p>
+                <div class="footer-status-badge">
+                    <span class="status-dot"></span>
+                    <span id="dbStatusText">System Operational</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Global JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

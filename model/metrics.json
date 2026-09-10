@@ -1,0 +1,31 @@
+{
+    "best_model": "Random Forest Regressor",
+    "metrics": {
+        "r2": 0.9597,
+        "mae": 88650.82,
+        "rmse": 163573.86
+    },
+    "comparison": {
+        "Linear Regression": {
+            "r2": 0.8009,
+            "mae": 258636.67,
+            "rmse": 363409.68
+        },
+        "Decision Tree Regressor": {
+            "r2": 0.9002,
+            "mae": 120617.64,
+            "rmse": 257266.18
+        },
+        "Random Forest Regressor": {
+            "r2": 0.9597,
+            "mae": 88650.82,
+            "rmse": 163573.86
+        },
+        "Gradient Boosting Regressor": {
+            "r2": 0.9503,
+            "mae": 106876.03,
+            "rmse": 181503.71
+        }
+    },
+    "dataset_size": 2750
+}

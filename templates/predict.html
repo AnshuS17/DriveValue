@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}DriveValue | Estimate Your Car's Value & Camera Scanner{% endblock %}
+
+{% block content %}
+<div class="page-header text-center">
+    <div class="container">
+        <span class="badge-dot-container"><span class="badge-dot"></span> ML VALUATION & AI CAMERA SCANNER</span>
+        <h1 class="page-title">Estimate Your Car's Value</h1>
+        <p class="page-subtitle">Snap a photo with your camera or enter details to receive an instant data-driven resale price estimate.</p>
+    </div>
+</div>
+
+<div class="container form-result-wrapper">
+    <!-- Valuation Mode Switcher Tabs -->
+    <div class="mode-switcher-card card mb-4 text-center">
+        <div class="mode-buttons">
+            <button id="modeCameraBtn" class="mode-btn active">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                Instant Camera Photo Scan
+            </button>
+            <button id="modeFormBtn" class="mode-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                Detailed Specifications Form
+            </button>
+        </div>
+    </div>
+
+    <!-- MODE 1: CAMERA & PHOTO SCANNER SECTION -->
+    <div id="cameraSection" class="card camera-scanner-card mb-4">
+        <div class="camera-header text-center mb-3">
+            <h3 class="camera-title">AI Camera & Photo Valuation Scanner</h3>
+            <p class="text-secondary">Snap a live photo of your vehicle using your webcam/camera, or upload an image file.</p>
+        </div>
+
+        <div class="camera-viewfinder-container">
+            <!-- Viewfinder Area -->
+            <div class="viewfinder" id="viewfinder">
+                <video id="webcamVideo" autoplay playsinline muted class="webcam-feed hidden"></video>
+                <img id="imagePreview" class="captured-image-preview hidden" alt="Captured vehicle">
+                
+                <div id="cameraPlaceholder" class="camera-placeholder">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#666666" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    <p class="placeholder-title">Turn on camera or upload photo</p>
+                    <p class="placeholder-desc">Click 'Start Camera' below or drop an image file</p>
+                </div>
+
+                <!-- Laser scanning animation overlay -->
+                <div id="scannerOverlay" class="scanner-overlay hidden">
+                    <div class="scan-laser"></div>
+                    <span class="scan-status-text" id="scanStatusText">AI Scanning Vehicle Profile...</span>
+                </div>
+            </div>
+
+            <!-- Camera Action Buttons -->
+            <div class="camera-controls">
+                <button id="startCamBtn" class="btn btn-outline">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    Start Camera
+                </button>
+
+                <button id="capturePhotoBtn" class="btn btn-primary hidden">
+                    📸 Capture Photo
+                </button>
+
+                <label class="btn btn-outline file-upload-btn">
+                    📁 Upload Image File
+                    <input type="file" id="imageFileInput" accept="image/*" class="hidden">
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODE 2: FORM CARD (Manual Specifications Input) -->
+    <div id="formSection" class="card form-card hidden">
+        <form id="predictionForm" novalidate>
+            <!-- SECTION 1 -->
+            <div class="form-section">
+                <div class="section-badge">SECTION 01</div>
+                <h3 class="form-section-title">Vehicle Information</h3>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="brand">Brand <span class="required">*</span></label>
+                        <select id="brand" name="brand" class="form-control" required>
+                            <option value="">Select Brand</option>
+                        </select>
+                        <div class="error-msg" id="brandError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="model">Model <span class="required">*</span></label>
+                        <select id="model" name="model" class="form-control" required disabled>
+                            <option value="">Select Brand First</option>
+                        </select>
+                        <div class="error-msg" id="modelError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="variant">Variant / Trim</label>
+                        <input type="text" id="variant" name="variant" class="form-control" placeholder="e.g. VXi, SX(O), ZX">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="year">Manufacturing Year <span class="required">*</span></label>
+                        <select id="year" name="year" class="form-control" required>
+                            <option value="">Select Year</option>
+                            {% for y in range(2026, 1994, -1) %}
+                            <option value="{{ y }}" {% if y == 2021 %}selected{% endif %}>{{ y }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="error-msg" id="yearError"></div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="form-divider">
+
+            <!-- SECTION 2 -->
+            <div class="form-section">
+                <div class="section-badge">SECTION 02</div>
+                <h3 class="form-section-title">Specifications</h3>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="fuel_type">Fuel Type <span class="required">*</span></label>
+                        <select id="fuel_type" name="fuel_type" class="form-control" required>
+                            <option value="Petrol">Petrol</option>
+                            <option value="Diesel" selected>Diesel</option>
+                            <option value="CNG">CNG</option>
+                            <option value="Electric">Electric</option>
+                            <option value="Hybrid">Hybrid</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="transmission">Transmission <span class="required">*</span></label>
+                        <select id="transmission" name="transmission" class="form-control" required>
+                            <option value="Manual">Manual</option>
+                            <option value="Automatic" selected>Automatic</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="engine_cc">Engine Capacity (CC) <span class="required">*</span></label>
+                        <input type="number" id="engine_cc" name="engine_cc" class="form-control" placeholder="e.g. 1197, 2755" value="2755" min="600" max="6000" required>
+                        <div class="error-msg" id="engineCcError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mileage">Mileage (kmpl / km/kg) <span class="required">*</span></label>
+                        <input type="number" step="0.1" id="mileage" name="mileage" class="form-control" placeholder="e.g. 14.2, 20.5" value="14.2" min="5" max="45" required>
+                        <div class="error-msg" id="mileageError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="seats">Number of Seats</label>
+                        <select id="seats" name="seats" class="form-control">
+                            <option value="4">4 Seats</option>
+                            <option value="5">5 Seats</option>
+                            <option value="6">6 Seats</option>
+                            <option value="7" selected>7 Seats</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="form-divider">
+
+            <!-- SECTION 3 -->
+            <div class="form-section">
+                <div class="section-badge">SECTION 03</div>
+                <h3 class="form-section-title">Usage & Ownership</h3>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="km_driven">Kilometers Driven <span class="required">*</span></label>
+                        <input type="number" id="km_driven" name="km_driven" class="form-control" placeholder="e.g. 45000" value="45000" min="0" required>
+                        <div class="error-msg" id="kmDrivenError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ownership">Number of Owners <span class="required">*</span></label>
+                        <select id="ownership" name="ownership" class="form-control" required>
+                            <option value="1st Owner" selected>1st Owner</option>
+                            <option value="2nd Owner">2nd Owner</option>
+                            <option value="3rd Owner">3rd Owner</option>
+                            <option value="4+ Owners">4+ Owners</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location / City <span class="required">*</span></label>
+                        <select id="location" name="location" class="form-control" required>
+                            <option value="Mumbai">Mumbai</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Bengaluru">Bengaluru</option>
+                            <option value="Hyderabad">Hyderabad</option>
+                            <option value="Chennai">Chennai</option>
+                            <option value="Pune">Pune</option>
+                            <option value="Ahmedabad">Ahmedabad</option>
+                            <option value="Kolkata">Kolkata</option>
+                            <option value="Vadodara" selected>Vadodara</option>
+                            <option value="Surat">Surat</option>
+                            <option value="Jaipur">Jaipur</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="condition">Car Condition <span class="required">*</span></label>
+                        <select id="condition" name="condition" class="form-control" required>
+                            <option value="Excellent">Excellent</option>
+                            <option value="Good" selected>Good</option>
+                            <option value="Fair">Fair</option>
+                            <option value="Poor">Poor</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="insurance_valid">Insurance Status</label>
+                        <select id="insurance_valid" name="insurance_valid" class="form-control">
+                            <option value="true" selected>Valid Insurance</option>
+                            <option value="false">Expired / None</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-submit-container">
+                <button type="submit" id="predictBtn" class="btn btn-primary btn-block btn-lg">
+                    <span id="btnText">Predict Car Price</span>
+                    <span id="btnSpinner" class="spinner hidden"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Hidden Canvas for frame capture -->
+    <canvas id="captureCanvas" class="hidden"></canvas>
+
+    <!-- Prediction Result Dashboard Container -->
+    <div id="resultContainer" class="result-container hidden">
+        <div class="card result-card">
+            <div class="result-header">
+                <span class="result-tag">VALUATION RESULT</span>
+                <span class="reliability-badge" id="reliabilityBadge">Model Reliability: --</span>
+            </div>
+
+            <div class="price-display-box">
+                <span class="price-title">ESTIMATED RESALE VALUE</span>
+                <div class="price-value" id="resaleValue">₹0</div>
+                
+                <div class="market-range-box">
+                    <span class="range-label">Estimated Market Range:</span>
+                    <span class="range-value" id="marketRangeText">₹0 – ₹0</span>
+                </div>
+            </div>
+
+            <div class="vehicle-summary-card">
+                <div class="vehicle-summary-header">
+                    <h4 id="vehicleTitle" class="vehicle-title">Toyota Fortuner</h4>
+                    <span id="vehicleSubtitle" class="vehicle-subtitle">2.8 4x4 AT</span>
+                </div>
+                <div id="vehicleSpecs" class="vehicle-specs-pills">
+                    <!-- Pills injected via JS -->
+                </div>
+            </div>
+
+            <!-- Why This Price Explanation -->
+            <div class="explanation-box">
+                <h4 class="box-title">
+                    <svg class="box-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Why this price?
+                </h4>
+                <p id="explanationText" class="explanation-text">
+                    Calculating valuation factors...
+                </p>
+            </div>
+
+            <!-- Feature Importance Chart -->
+            <div class="chart-box">
+                <h4 class="box-title">Key Price Factors & Feature Importances</h4>
+                <p class="chart-subtitle">Relative impact of key features from the trained Random Forest model.</p>
+                <div class="chart-wrapper">
+                    <canvas id="importanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Similar Cars Section -->
+        <div class="similar-cars-section">
+            <div class="section-header">
+                <h3 class="section-title">Similar Cars in Our Database</h3>
+                <p class="section-desc">Active listings matching similar vehicle characteristics and market range.</p>
+            </div>
+
+            <div class="cars-grid" id="similarCarsGrid">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/predict.js') }}"></script>
+{% endblock %}
